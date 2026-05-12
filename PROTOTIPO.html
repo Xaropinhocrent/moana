@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Quiz do Toguro 💪</title>
+
+    <style>
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+
+      body {
+        font-family: Arial;
+        background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+        color: white;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+        padding: 20px;
+      }
+
+      .container {
+        background: rgba(0, 0, 0, 0.7);
+        padding: 30px;
+        border-radius: 15px;
+        width: 100%;
+        max-width: 400px;
+        text-align: center;
+      }
+
+      button {
+        display: block;
+        width: 100%;
+        margin: 8px 0;
+        padding: 12px;
+        border: none;
+        border-radius: 8px;
+        background: #ffcc00;
+        font-weight: bold;
+        cursor: pointer;
+      }
+
+      #nextBtn {
+        background: #00c853;
+        color: white;
+        display: none;
+      }
+
+      .tela-quiz, .resultado-final {
+        display: none;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="container">
+      <div id="telaInicio">
+        <h2>Quiz do Toguro 💪</h2>
+        <p>Teste seus conhecimentos sobre o Binômio de Newton!</p>
+        <button onclick="iniciarQuiz()">Iniciar</button>
+      </div>
+
+      <div class="tela-quiz" id="telaQuiz">
+        <h2 id="pergunta"></h2>
+        <div id="opcoes"></div>
+        <button id="nextBtn" onclick="proxima()">Próxima</button>
+      </div>
+
+      <div class="resultado-final" id="resultadoFinal"></div>
+    </div>
+
+    <script>
+      const quiz = [
+        {
+          pergunta: "💪Toguro: (x+1)² = x² + 2x + 1\nEle tá:",
+          opcoes: ["Fraco", "Certo 😎", "Só metendo o shape", "Confundindo com treino de perna"],
+          resposta: 1,
+        },
+        {
+          pergunta: "🐶Cachorro chupetão: (a+b)³ = a³ + 3a²b + 3ab² + b³\ncorreto?",
+          opcoes: ["Acertou tudo", "Errou o último termo", "Só chutou", "Usou pacto matemático"],
+          resposta: 0,
+        },
+        {
+          pergunta: "📚 (a+b)⁴: de onde veio o 6?",
+          opcoes: ["Aleatório", "Combinação (4 escolhe 2)", "Multiplicação", "Energia do universo"],
+          resposta: 1,
+        },
+        {
+          pergunta: "💀 Skill issue: (a+b)² = a² + b²?",
+          opcoes: ["Esqueceu 2ab", "Tá certo", "Fonte errada", "Feeling"],
+          resposta: 0,
+        },
+        {
+          pergunta: "😎 Sigma do Pascal: os coeficientes de (a+b)⁵ são 1,5,10,10,5,1. → qual o 3º termo?",
+          opcoes: ["10a³b²", "5a⁴b", "10a²b³", "a⁵"],
+          resposta: 0,
+        },
+        {
+          pergunta: "🗿🍷: alguém disse que (a+b)² = a² + b²\nvocê diz:",
+          opcoes: ["não tankei, faltou o 2ab", "tá certo", "depende", "deixa baixo"],
+          resposta: 0,
+        },
+        {
+          pergunta: "😭 “errei fui mlk”: coeficiente de a²b² em (a+b)⁴ é:",
+          opcoes: ["4", "6", "8", "2"],
+          resposta: 1,
+        },
+
+        // NOVAS ↓
+
+        {
+          pergunta: "💻 “Hello World” → “Hello Trauma” 💀\nEm (a+b)³, qual termo vem logo após a³?",
+          opcoes: ["3a²b", "ab²", "b³", "2ab"],
+          resposta: 0,
+        },
+        {
+          pergunta: "💻 um programador tentou expandir: (x+y)⁴ e fez: x⁴ + 4x + y⁴\nQual foi o erro?",
+          opcoes: [
+            "Esqueceu os termos do meio 💀",
+            "Tá certo",
+            "Usou letra demais",
+            "Era pra usar JS",
+          ],
+          resposta: 0,
+        },
+        {
+          pergunta: " Usando o Binômio de Newton: qual o coeficiente de x²y³ em (x+y)⁵?",
+          opcoes: ["10 ", "5", "20", "1"],
+          resposta: 0,
+        },
+      ];
+
+      let atual = 0;
+      let acertos = 0;
+
+      function iniciarQuiz() {
+        document.getElementById("telaInicio").style.display = "none";
+        document.getElementById("telaQuiz").style.display = "block";
+        carregarPergunta();
+      }
+
+      function carregarPergunta() {
+        const q = quiz[atual];
+        document.getElementById("pergunta").innerText = q.pergunta;
+        const opcoesEl = document.getElementById("opcoes");
+        opcoesEl.innerHTML = "";
+        document.getElementById("nextBtn").style.display = "none";
+
+        q.opcoes.forEach((op, i) => {
+          const btn = document.createElement("button");
+          btn.innerText = op;
+
+          btn.onclick = () => {
+            if (i === q.resposta) {
+              acertos++;
+              btn.style.background = "green";
+            } else {
+              btn.style.background = "red";
+            }
+
+            Array.from(opcoesEl.children).forEach((b) => (b.disabled = true));
+            document.getElementById("nextBtn").style.display = "block";
+          };
+
+          opcoesEl.appendChild(btn);
+        });
+      }
+
+      function proxima() {
+        atual++;
+        if (atual < quiz.length) carregarPergunta();
+        else mostrarResultado();
+      }
+
+      function mostrarResultado() {
+        document.getElementById("telaQuiz").style.display = "none";
+        const res = document.getElementById("resultadoFinal");
+        res.style.display = "block";
+
+        let msg =
+          acertos <= 3
+            ? "Virou meme 💀"
+            : acertos <= 7
+            ? "Tá forte 😎"
+            : "LENDÁRIO 💪🔥";
+
+        res.innerHTML = `
+          <h2>Resultado</h2>
+          <p>${acertos} / ${quiz.length}</p>
+          <h3>${msg}</h3>
+          <button onclick="location.reload()">Jogar novamente</button>
+        `;
+      }
+    </script>
+  </body>
+</html>
